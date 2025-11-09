@@ -1,0 +1,11 @@
+streamlit
+opencv-python-headless
+numpy
+supervision
+ultralytics
+torch
+transformers
+scikit-learn
+umap-learn
+deepsort-realtime
+Pillow
