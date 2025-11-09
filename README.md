@@ -76,3 +76,14 @@ Esto asegura que la herramienta pueda ser usada por:
 
 
 Prototipo desarrollado en el contexto de un hackatón, con enfoque en impacto social y accesibilidad tecnológica.
+
+## 🪪 Licencia
+
+Este proyecto está licenciado bajo la [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
+
+© 2025 Equipo de Desarrollo del Proyecto RaaS — Bytelab, Yachay Tech  
+Integrantes: Aldrin Chávez, Ariel Pincay, Britney Robalino, Carlos Castro  
+
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC--BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+
+
