@@ -11,6 +11,10 @@ import umap.umap_ as umap
 import tempfile
 import os
 from deep_sort_realtime.deepsort_tracker import DeepSort
+import os
+os.environ["STREAMLIT_WATCHDOG"] = "false"
+
+
 
 # Configuración de página
 st.set_page_config(
