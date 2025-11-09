@@ -28,17 +28,16 @@ def load_yolo_models():
         model_players = YOLO("Models/pgrb_little.pt")
         model_ball = YOLO("Models/ball_little.pt")
     return model_vertex, model_players, model_ball
-from transformers import CLIPProcessor, CLIPModel
 
 @st.cache_resource
 def load_siglip_model():
-    """Carga modelo CLIP liviano compatible con Streamlit Cloud"""
-    with st.spinner("🔄 Cargando modelo CLIP..."):
+    """Carga modelo SigLIP una sola vez"""
+    with st.spinner("🔄 Cargando modelo SigLIP (puede tardar la primera vez)..."):
         DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-        model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(DEVICE)
-        processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-    return model, processor, DEVICE
-
+        SIGLIP_MODEL_PATH = 'google/siglip-base-patch16-224'
+        embeddings_model = SiglipVisionModel.from_pretrained(SIGLIP_MODEL_PATH).to(DEVICE)
+        embeddings_processor = AutoProcessor.from_pretrained(SIGLIP_MODEL_PATH)
+    return embeddings_model, embeddings_processor, DEVICE
 
 # --- CONSTANTES ---
 BALL_CLASS_ID = 0
@@ -85,26 +84,24 @@ class TeamClassifier:
         self.reducer = None
         self.kmeans = None
         
-    
     def extract_embeddings(self, crops, batch_size=16):
-    """Extrae embeddings usando CLIP (solo imágenes)"""
+        """Extrae embeddings usando SigLIP"""
         if len(crops) == 0:
             return np.array([])
-    
+        
         crops_pil = [sv.cv2_to_pillow(crop) for crop in crops]
+        
         embeddings_list = []
-    
         with torch.no_grad():
             for i in range(0, len(crops_pil), batch_size):
                 batch = crops_pil[i:i + batch_size]
                 inputs = self.embeddings_processor(images=batch, return_tensors="pt").to(self.device)
-                # 🔹 Obtener directamente las features de imagen
-                outputs = self.embeddings_model.get_image_features(**inputs)
-                batch_embeddings = outputs.cpu().numpy()
+                outputs = self.embeddings_model(**inputs)
+                batch_embeddings = torch.mean(outputs.last_hidden_state, dim=1).cpu().numpy()
                 embeddings_list.append(batch_embeddings)
-    
+        
         return np.concatenate(embeddings_list, axis=0)
-
+        
     def fit(self, crops, progress_callback=None):
         """Entrena el clasificador con crops de jugadores"""
         if len(crops) < 20:
