@@ -14,7 +14,7 @@ from deep_sort_realtime.deepsort_tracker import DeepSort
 
 # Configuración de página
 st.set_page_config(
-    page_title="Clasificador de Equipos con IA",
+    page_title="Bytelab AI",
     page_icon="⚽",
     layout="wide"
 )
